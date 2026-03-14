@@ -2,353 +2,326 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard SharePoint Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reproductor de Videos Profesional</title>
   <style>
-    html, body {
-      height: 100%;
+    body {
+      background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+      color: #232a36;
+      font-family: 'Segoe UI', Arial, sans-serif;
       margin: 0;
       padding: 0;
-    }
-    body {
-      background: linear-gradient(120deg, #f5f7fa 0%, #c3cfe2 100%);
-      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-      margin: 0;
       min-height: 100vh;
-      color: #222;
+      transition: background 0.4s, color 0.4s;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
     }
-    .dashboard {
-      margin-top: 0;
-      background: rgba(255,255,255,0.98);
-      border-radius: 0 0 48px 48px;
-      box-shadow: 0 16px 64px 0 #b0b7c3cc, 0 1.5px 0 #e0e0e044;
-      padding: 0 0 0 0;
-      max-width: 100vw;
+    body.night {
+      background: linear-gradient(120deg, #181c24 0%, #232a36 100%);
+      color: #fff;
+    }
+    .main-header {
       width: 100vw;
-      text-align: center;
-      animation: fadeIn 1s;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      border-bottom: 2px solid #e0e0e0;
-      backdrop-filter: blur(10px);
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
+      padding: 24px 5vw 0 5vw;
+      box-sizing: border-box;
+      background: transparent;
     }
-    .dashboard-header {
-      width: 100vw;
-      background: linear-gradient(90deg, #e0e7ef 0%, #f5f7fa 100%);
-      border-radius: 0 0 48px 48px;
-      box-shadow: 0 4px 32px #b0b7c3cc;
-      padding: 44px 0 22px 0;
+    .logo-title {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      position: relative;
-    }
-    .dashboard-header::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      bottom: -18px;
-      transform: translateX(-50%);
-      width: 80vw;
-      height: 32px;
-      background: radial-gradient(ellipse at center, #e0e7ef44 0%, transparent 80%);
-      z-index: 1;
+      gap: 18px;
     }
     .logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #fff 0%, #e0e7ef 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 16px #b0b7c3cc;
-    }
-    .logo svg {
-      width: 44px;
-      height: 44px;
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #00b4d822;
+      background: #fff;
+      object-fit: cover;
+      border: 2px solid #00b4d8;
+      transition: border 0.3s;
+      display: none;
     }
     h1 {
-      font-size: 2.8rem;
-      font-weight: 900;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-      color: #222;
-      text-shadow: 0 4px 24px #e0e7ef, 0 1.5px 0 #fff2;
-      background: none;
-      -webkit-background-clip: unset;
-      -webkit-text-fill-color: unset;
-      background-clip: unset;
-    }
-    .subtitle {
-      font-size: 1.15rem;
-      color: #4b5563;
-      margin-bottom: 0;
+      font-size: 2.3rem;
       letter-spacing: 1px;
-      font-weight: 500;
+      color: #00b4d8;
+      text-shadow: 0 2px 12px #fff8;
+      margin: 0;
+      transition: color 0.4s, text-shadow 0.4s;
     }
-    .input-group {
-      display: flex;
-      margin: 36px 0 14px 0;
-      gap: 14px;
-      justify-content: center;
-      align-items: center;
-      width: 80vw;
-      max-width: 720px;
-      z-index: 2;
+    body.night h1 {
+      color: #48cae4;
+      text-shadow: 0 2px 12px #232a36cc;
     }
-    input[type='url'] {
-      flex: 1;
-      min-width: 260px;
-      max-width: 600px;
-      padding: 20px 24px;
-      border-radius: 18px;
+    .theme-btn {
+      background: linear-gradient(90deg, #00b4d8 60%, #48cae4 100%);
+      color: #fff;
       border: none;
-      font-size: 1.18rem;
-      background: #f5f7fa;
-      color: #222;
-      outline: none;
-      box-shadow: 0 2px 16px #e0e7efcc;
-      transition: box-shadow 0.2s, border 0.2s;
-      border: 2px solid #e0e7ef;
-      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-    }
-    input[type='url']:focus {
-      box-shadow: 0 0 0 3px #b0b7c3;
-      border: 2px solid #b0b7c3;
-    }
-    button {
-      padding: 20px 44px;
-      border-radius: 18px;
-      border: none;
-      background: linear-gradient(90deg, #b0b7c3, #f5f7fa 90%);
-      color: #222;
-      font-size: 1.18rem;
-      font-weight: 800;
+      border-radius: 14px;
+      padding: 0;
+      font-size: 1.8rem;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 2px 16px #b0b7c3cc;
-      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-      letter-spacing: 1px;
-      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      box-shadow: 0 2px 8px #00b4d822;
+      transition: background 0.2s, transform 0.2s;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 56px;
+      outline: none;
+      border: none;
     }
-    button:hover {
-      background: linear-gradient(90deg, #f5f7fa, #b0b7c3 90%);
-      transform: scale(1.08);
-      box-shadow: 0 4px 28px #b0b7c399;
+    .theme-btn:focus {
+      outline: 2.5px solid #48cae4;
+    }
+    .theme-btn:hover {
+      background: linear-gradient(90deg, #0096c7 60%, #00b4d8 100%);
+      transform: translateY(-2px) scale(1.08);
+    }
+    .theme-icon {
+      font-size: 2.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+    }
+    .video-container {
+      margin: 32px auto 0 auto;
+      background: rgba(255,255,255,0.97);
+      border-radius: 32px;
+      box-shadow: 0 8px 32px #00b4d822, 0 1.5px 8px #48cae488;
+      padding: 48px 36px 36px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 98vw;
+      max-width: 1300px;
+      min-height: 60vh;
+      animation: fadeInUp 1.2s;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    body.night .video-container {
+      background: rgba(35,42,54,0.98);
+      box-shadow: 0 8px 32px #000a, 0 1.5px 8px #00b4d822;
     }
     .controls {
-      margin-top: 10px;
+      margin-bottom: 28px;
       display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
+    }
+    .file-label {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .file-label input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
       z-index: 2;
     }
-    .controls button {
-      padding: 14px 36px;
-      font-size: 1.13rem;
-      border-radius: 14px;
-      background: linear-gradient(90deg, #f5f7fa, #b0b7c3 90%);
-      color: #222;
-      font-weight: 700;
-      box-shadow: 0 2px 10px #e0e7efcc;
+    .file-custom {
+      display: inline-block;
+      background: linear-gradient(90deg, #00b4d8 60%, #48cae4 100%);
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px 32px;
+      font-size: 1.18rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px #00b4d822;
+      border: none;
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      z-index: 1;
+      position: relative;
     }
-    .controls button:hover {
-      background: linear-gradient(90deg, #b0b7c3, #f5f7fa 90%);
+    .file-label:hover .file-custom {
+      background: linear-gradient(90deg, #0096c7 60%, #00b4d8 100%);
+      transform: translateY(-2px) scale(1.04);
+    }
+    video {
+      width: 100%;
+      max-width: 1200px;
+      min-height: 340px;
+      border-radius: 20px;
+      background: #e0eafc;
+      margin-top: 18px;
+      box-shadow: 0 2px 16px #00b4d822;
+      border: 2.5px solid #00b4d8;
+      outline: 4px solid #f1faff;
+      transition: box-shadow 0.2s, border 0.2s, background 0.4s;
+    }
+    body.night video {
+      background: #181c24;
+      border: 2.5px solid #48cae4;
+      outline: 4px solid #232a36;
     }
     .error {
-      color: #f87171;
-      margin-top: 10px;
-      font-size: 1.13rem;
+      color: #ff5252;
+      margin-top: 14px;
       min-height: 24px;
-      text-shadow: 0 1px 0 #fff8;
-      font-weight: 600;
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
-    .viewer {
-      margin-top: 150px;
-      width: 100vw;
-      height: calc(100vh - 150px);
-      background: #fff;
-      border-radius: 0 0 40px 40px;
-      box-shadow: 0 2px 40px #e0e7efcc;
-      overflow: hidden;
-      display: none;
-      animation: fadeIn 1s;
-      position: absolute;
-      top: 150px;
-      left: 0;
-      transition: box-shadow 0.3s;
+    .autoplay-msg {
+      margin-top: 18px;
+      color: #0096c7;
+      background: #e0f7fa;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px #00b4d822;
+      text-align: center;
+      animation: fadeInMsg 1s;
     }
-    .viewer.active {
-      display: block;
-      box-shadow: 0 8px 56px #b0b7c399;
+    @keyframes fadeInMsg {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    iframe {
-      width: 100vw;
-      height: 100%;
-      border: none;
-      background: #fff;
-      border-radius: 0 0 40px 40px;
-      box-shadow: 0 2px 20px #e0e7efcc;
-    }
-    @media (max-width: 700px) {
-      .dashboard-header {
-        padding: 18px 0 10px 0;
+    @media (max-width: 900px) {
+      .video-container, video {
+        max-width: 98vw;
+        min-width: 0;
       }
-      h1 {
-        font-size: 1.3rem;
-      }
-      .input-group input[type='url'] {
-        min-width: 80px;
-        font-size: 1rem;
-      }
-      .controls button, button {
-        font-size: 0.95rem;
-        padding: 10px 10vw;
-      }
-      .viewer {
-        margin-top: 120px;
-        height: calc(100vh - 120px);
-        top: 120px;
+      .main-header, .main-footer {
+        padding-left: 2vw;
+        padding-right: 2vw;
       }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="dashboard">
-    <div class="dashboard-header">
-      <div class="logo">
-        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#60a5fa"/><path d="M16 32V16h16v16H16zm2-2h12V18H18v12zm2-2v-8h8v8h-8z" fill="#fff"/></svg>
+  <header class="main-header">
+    <div class="logo-title">
+      <h1>Reproductor de Videos Profesional</h1>
+    </div>
+    <button id="toggleThemeBtn" class="theme-btn" title="Cambiar tema">
+      <span class="theme-icon">🌙</span>
+    </button>
+  </header>
+  <main>
+    <div class="video-container">
+      <div class="controls">
+        <label class="file-label">
+          <input type="file" id="fileInput" accept="video/*">
+          <span class="file-custom">📁 Elegir video</span>
+        </label>
       </div>
-      <h1>Dashboard SharePoint Viewer</h1>
-      <div class="subtitle">Visualiza presentaciones de SharePoint, OneDrive y Google Drive en un entorno premium</div>
+      <video id="videoPlayer" controls poster="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80" preload="metadata" autoplay muted>
+        Tu navegador no soporta la reproducción de video.
+      </video>
+      <div class="autoplay-msg" id="autoplayMsg" style="display:none;">
+        🔊 El video se reproduce en silencio por políticas del navegador.<br>
+        Haz clic en el video para activar el sonido.
+      </div>
+      <div class="error" id="errorMsg"></div>
     </div>
-    <div class="input-group">
-      <input type="url" id="sharepointUrl" placeholder="Pega aquí el enlace de SharePoint, OneDrive o Google Drive..." required>
-      <button id="openBtn">Abrir presentación</button>
-    </div>
-    <div class="controls">
-      <button id="fullscreenBtn">Pantalla completa</button>
-      <button id="clearBtn">Limpiar visor</button>
-    </div>
-    <div class="error" id="errorMsg"></div>
-  </div>
-  <div class="viewer" id="viewer">
-    <iframe id="iframeViewer" allowfullscreen></iframe>
-  </div>
+  </main>
   <script>
-    const openBtn = document.getElementById('openBtn');
-    const urlInput = document.getElementById('sharepointUrl');
+    const fileInput = document.getElementById('fileInput');
+    const playUrlBtn = document.getElementById('playUrlBtn');
+    const videoPlayer = document.getElementById('videoPlayer');
     const errorMsg = document.getElementById('errorMsg');
-    const viewer = document.getElementById('viewer');
-    const iframe = document.getElementById('iframeViewer');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const clearBtn = document.getElementById('clearBtn');
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    const themeIcon = document.querySelector('.theme-icon');
+    const autoplayMsg = document.getElementById('autoplayMsg');
 
-    openBtn.addEventListener('click', () => {
-      let url = urlInput.value.trim();
-      errorMsg.textContent = '';
-      viewer.classList.remove('active');
-      // Google Slides: convertir a modo presentación
-      if (url.includes('docs.google.com/presentation')) {
-        url = url.replace(/\/edit.*$/, '/present');
-        url = url.replace(/\/view.*$/, '/present');
+    // Guardar preferencia de tema
+    let night = localStorage.getItem('nightMode') === 'true';
+    if (night) {
+      document.body.classList.add('night');
+      themeIcon.textContent = '☀️';
+    }
+    toggleThemeBtn.addEventListener('click', () => {
+      night = !night;
+      document.body.classList.toggle('night', night);
+      themeIcon.textContent = night ? '☀️' : '🌙';
+      localStorage.setItem('nightMode', night);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        videoPlayer.src = url;
+        videoPlayer.poster = '';
+        errorMsg.textContent = '';
+        videoPlayer.muted = true;
+        videoPlayer.autoplay = true;
+        videoPlayer.play();
+        autoplayMsg.style.display = 'block';
       }
-      // PowerPoint Online: convertir a modo embed
-      if (url.includes('onedrive.live.com') && !url.includes('embed')) {
-        // Extraer el resid y armar embed
-        const match = url.match(/resid=([^&]+)/);
-        if (match) {
-          url = `https://onedrive.live.com/embed?resid=${match[1]}`;
-        }
-      }
-      // SharePoint: intentar forzar solo visualización (no edición)
-      if (url.includes('sharepoint.com') && url.includes('action=edit')) {
-        url = url.replace('action=edit', 'action=view');
-      }
-      if (!url || !url.startsWith('http')) {
-        errorMsg.textContent = 'Por favor ingresa un enlace válido.';
+    });
+
+    playUrlBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (!url) {
+        errorMsg.textContent = 'Por favor ingresa un enlace de video.';
         return;
       }
-      if (!url.includes('sharepoint.com') && !url.includes('1drv.ms') && !url.includes('onedrive.live.com') && !url.includes('docs.google.com')) {
-        errorMsg.textContent = 'El enlace debe ser de SharePoint, OneDrive o Google Drive.';
+      if (!/^https?:\/\/.+\.(mp4|webm|ogg)(\?.*)?$/i.test(url)) {
+        errorMsg.textContent = 'El enlace debe ser directo a un archivo de video (.mp4, .webm, .ogg).';
         return;
       }
-      iframe.src = url;
-      viewer.classList.add('active');
-      // Lanzar presentación automática en pantalla completa
-      setTimeout(() => {
-        fullscreenBtn.click();
-      }, 500);
-      // Si es Google Slides, intentar avanzar cada 20s
-      if (url.includes('docs.google.com/presentation')) {
-        if (window.slideInterval) clearInterval(window.slideInterval);
-        window.slideInterval = setInterval(() => {
-          iframe.contentWindow.postMessage({method: 'next'}, '*');
-        }, 20000);
-      }
-    });
-
-    // Al limpiar visor, detener autoavance
-    clearBtn.addEventListener('click', () => {
-      iframe.src = '';
-      viewer.classList.remove('active');
-      urlInput.value = '';
+      videoPlayer.src = url;
+      videoPlayer.poster = '';
       errorMsg.textContent = '';
-      if (window.slideInterval) clearInterval(window.slideInterval);
+      videoPlayer.play();
     });
 
-    // Al salir de pantalla completa, restaurar dashboard y detener autoavance
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        document.querySelector('.dashboard').style.display = '';
-        viewer.style.position = 'absolute';
-        viewer.style.top = '150px';
-        viewer.style.left = '0';
-        viewer.style.width = '100vw';
-        viewer.style.height = 'calc(100vh - 150px)';
-        viewer.style.marginTop = '';
-        viewer.style.borderRadius = '0 0 40px 40px';
-        if (window.slideInterval) clearInterval(window.slideInterval);
+    videoPlayer.addEventListener('volumechange', () => {
+      if (!videoPlayer.muted && videoPlayer.volume > 0) {
+        autoplayMsg.style.display = 'none';
       }
     });
-    document.addEventListener('webkitfullscreenchange', () => {
-      if (!document.webkitFullscreenElement) {
-        document.querySelector('.dashboard').style.display = '';
-        viewer.style.position = 'absolute';
-        viewer.style.top = '150px';
-        viewer.style.left = '0';
-        viewer.style.width = '100vw';
-        viewer.style.height = 'calc(100vh - 150px)';
-        viewer.style.marginTop = '';
-        viewer.style.borderRadius = '0 0 40px 40px';
-        if (window.slideInterval) clearInterval(window.slideInterval);
+
+    videoPlayer.addEventListener('click', () => {
+      if (videoPlayer.muted) {
+        videoPlayer.muted = false;
+        autoplayMsg.style.display = 'none';
       }
     });
-    document.addEventListener('msfullscreenchange', () => {
-      if (!document.msFullscreenElement) {
-        document.querySelector('.dashboard').style.display = '';
-        viewer.style.position = 'absolute';
-        viewer.style.top = '150px';
-        viewer.style.left = '0';
-        viewer.style.width = '100vw';
-        viewer.style.height = 'calc(100vh - 150px)';
-        viewer.style.marginTop = '';
-        viewer.style.borderRadius = '0 0 40px 40px';
-        if (window.slideInterval) clearInterval(window.slideInterval);
+
+    // Atajo: barra espaciadora para pausar/reanudar
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.activeElement !== urlInput) {
+        e.preventDefault();
+        if (videoPlayer.paused) videoPlayer.play();
+        else videoPlayer.pause();
+      }
+    });
+
+    // Doble click en video: pantalla completa
+    videoPlayer.addEventListener('dblclick', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoPlayer.requestFullscreen();
       }
     });
   </script>
