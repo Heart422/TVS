@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: TVS
+    env: python
+    branch: main
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
