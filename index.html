@@ -3,327 +3,615 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reproductor de Videos Profesional</title>
+  <title>Administrador de Vídeos - TVS</title>
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #040b16;
+      --surface: rgba(12, 30, 58, 0.88);
+      --surface-strong: rgba(11, 27, 55, 0.96);
+      --accent: #36d6ff;
+      --accent-strong: #09b3ff;
+      --text: #eaf4ff;
+      --muted: #7da7c7;
+      --border: rgba(56, 136, 226, 0.18);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
-      background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-      color: #232a36;
-      font-family: 'Segoe UI', Arial, sans-serif;
       margin: 0;
-      padding: 0;
       min-height: 100vh;
-      transition: background 0.4s, color 0.4s;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top left, rgba(54, 214, 255, 0.18), transparent 25%),
+                  radial-gradient(circle at bottom right, rgba(9, 179, 255, 0.14), transparent 18%),
+                  linear-gradient(180deg, #050c18 0%, #0d1b33 52%, #06111f 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    .page-shell {
+      width: 100%;
+      padding: 32px 24px;
       display: flex;
       flex-direction: column;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
     }
-    body.night {
-      background: linear-gradient(120deg, #181c24 0%, #232a36 100%);
-      color: #fff;
-    }
-    .main-header {
-      width: 100vw;
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 5vw 0 5vw;
-      box-sizing: border-box;
-      background: transparent;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .logo-title {
+    .brand {
       display: flex;
       align-items: center;
+      gap: 14px;
+    }
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(54,214,255,0.98), rgba(9,179,255,0.28));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 48px rgba(54,214,255,0.22);
+    }
+    .brand-mark::before {
+      content: 'TVS';
+      color: #041023;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      font-size: 1rem;
+    }
+    .brand-title h1 {
+      font-size: clamp(2rem, 2.8vw, 3.2rem);
+      margin: 0;
+      line-height: 1.05;
+    }
+    .brand-title p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 660px;
+      font-size: 1rem;
+    }
+    .hero-panel {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      border-radius: 32px;
+      overflow: hidden;
+      padding: 32px;
+      backdrop-filter: blur(18px);
+      display: grid;
+      gap: 24px;
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
       gap: 18px;
     }
-    .logo {
-      width: 54px;
-      height: 54px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px #00b4d822;
-      background: #fff;
-      object-fit: cover;
-      border: 2px solid #00b4d8;
-      transition: border 0.3s;
-      display: none;
-    }
-    h1 {
-      font-size: 2.3rem;
-      letter-spacing: 1px;
-      color: #00b4d8;
-      text-shadow: 0 2px 12px #fff8;
+    .hero-top h2 {
       margin: 0;
-      transition: color 0.4s, text-shadow 0.4s;
+      font-size: clamp(1.5rem, 2vw, 2rem);
     }
-    body.night h1 {
-      color: #48cae4;
-      text-shadow: 0 2px 12px #232a36cc;
+    .hero-top .hint {
+      color: var(--muted);
+      font-size: 0.95rem;
     }
-    .theme-btn {
-      background: linear-gradient(90deg, #00b4d8 60%, #48cae4 100%);
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      padding: 0;
-      font-size: 1.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #00b4d822;
-      transition: background 0.2s, transform 0.2s;
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+    }
+    .process-card {
       position: relative;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 64px;
-      height: 56px;
-      outline: none;
-      border: none;
+      padding: 28px 22px;
+      border-radius: 28px;
+      border: 1px solid rgba(106, 192, 255, 0.14);
+      background: rgba(11, 26, 54, 0.88);
+      cursor: pointer;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      display: grid;
+      gap: 18px;
     }
-    .theme-btn:focus {
-      outline: 2.5px solid #48cae4;
+    .process-card:hover,
+    .process-card.active {
+      transform: translateY(-4px);
+      border-color: rgba(54, 214, 255, 0.44);
+      box-shadow: 0 28px 58px rgba(8, 22, 58, 0.32);
     }
-    .theme-btn:hover {
-      background: linear-gradient(90deg, #0096c7 60%, #00b4d8 100%);
-      transform: translateY(-2px) scale(1.08);
-    }
-    .theme-icon {
-      font-size: 2.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
+    .process-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(54,214,255,0.05), transparent 62%);
       pointer-events: none;
     }
-    main {
-      flex: 1;
+    .process-card h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0.03em;
+    }
+    .process-card small {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .process-card .pulse {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #36d6ff;
+      box-shadow: 0 0 20px rgba(54,214,255,0.6);
+      animation: pulse 2.4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.92; }
+      50% { transform: scale(1.4); opacity: 0.45; }
+    }
+    .dashboard {
+      display: none;
+      gap: 24px;
+    }
+    .dashboard.visible {
+      display: grid;
+    }
+    .dashboard-header {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      width: 100vw;
-    }
-    .video-container {
-      margin: 32px auto 0 auto;
-      background: rgba(255,255,255,0.97);
-      border-radius: 32px;
-      box-shadow: 0 8px 32px #00b4d822, 0 1.5px 8px #48cae488;
-      padding: 48px 36px 36px 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 98vw;
-      max-width: 1300px;
-      min-height: 60vh;
-      animation: fadeInUp 1.2s;
-      transition: background 0.4s, box-shadow 0.4s;
-    }
-    body.night .video-container {
-      background: rgba(35,42,54,0.98);
-      box-shadow: 0 8px 32px #000a, 0 1.5px 8px #00b4d822;
-    }
-    .controls {
-      margin-bottom: 28px;
-      display: flex;
-      gap: 18px;
+      gap: 16px;
       flex-wrap: wrap;
-      justify-content: center;
     }
-    .file-label {
-      position: relative;
-      display: inline-block;
+    .dashboard-header h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.4vw, 2.3rem);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(54,214,255,0.12);
+      color: #b8f0ff;
+      font-size: 0.95rem;
+      border: 1px solid rgba(54,214,255,0.28);
+    }
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 1.1fr 1.8fr;
+      gap: 22px;
+    }
+    .panel {
+      background: rgba(4, 11, 22, 0.9);
+      border: 1px solid rgba(106, 192, 255, 0.12);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(5, 16, 34, 0.28);
+      backdrop-filter: blur(20px);
+    }
+    .video-list {
+      display: grid;
+      gap: 12px;
+      max-height: 520px;
+      overflow: auto;
+    }
+    .video-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 18px 16px;
+      border-radius: 18px;
+      background: rgba(10, 22, 42, 0.92);
+      border: 1px solid rgba(75, 152, 233, 0.12);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .video-item.selected {
+      border-color: rgba(54, 214, 255, 0.4);
+      background: rgba(11, 32, 62, 0.96);
+    }
+    .video-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: #36d6ff;
       cursor: pointer;
+      margin-left: 2px;
     }
-    .file-label input[type="file"] {
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      z-index: 2;
-    }
-    .file-custom {
-      display: inline-block;
-      background: linear-gradient(90deg, #00b4d8 60%, #48cae4 100%);
-      color: #fff;
-      border-radius: 10px;
-      padding: 12px 32px;
-      font-size: 1.18rem;
-      font-weight: 600;
-      box-shadow: 0 2px 8px #00b4d822;
+    .video-item button {
       border: none;
-      transition: background 0.2s, transform 0.2s;
-      cursor: pointer;
-      letter-spacing: 0.5px;
-      z-index: 1;
-      position: relative;
-    }
-    .file-label:hover .file-custom {
-      background: linear-gradient(90deg, #0096c7 60%, #00b4d8 100%);
-      transform: translateY(-2px) scale(1.04);
-    }
-    video {
-      width: 100%;
-      max-width: 1200px;
-      min-height: 340px;
-      border-radius: 20px;
-      background: #e0eafc;
-      margin-top: 18px;
-      box-shadow: 0 2px 16px #00b4d822;
-      border: 2.5px solid #00b4d8;
-      outline: 4px solid #f1faff;
-      transition: box-shadow 0.2s, border 0.2s, background 0.4s;
-    }
-    body.night video {
-      background: #181c24;
-      border: 2.5px solid #48cae4;
-      outline: 4px solid #232a36;
-    }
-    .error {
-      color: #ff5252;
-      margin-top: 14px;
-      min-height: 24px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-    .autoplay-msg {
-      margin-top: 18px;
-      color: #0096c7;
-      background: #e0f7fa;
-      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(54,214,255,0.16), rgba(9,179,255,0.22));
+      color: var(--text);
       padding: 10px 18px;
-      font-size: 1.08rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px #00b4d822;
-      text-align: center;
-      animation: fadeInMsg 1s;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
     }
-    @keyframes fadeInMsg {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .video-item button:hover {
+      background: linear-gradient(135deg, rgba(54,214,255,0.28), rgba(9,179,255,0.44));
     }
-    @media (max-width: 900px) {
-      .video-container, video {
-        max-width: 98vw;
-        min-width: 0;
+    .video-item h4 {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.4;
+      color: #e9f8ff;
+      word-break: break-word;
+    }
+    .video-player {
+      display: grid;
+      gap: 18px;
+    }
+    .video-player video {
+      width: 100%;
+      border-radius: 24px;
+      min-height: 280px;
+      background: #02050b;
+      border: 1px solid rgba(54,214,255,0.18);
+      box-shadow: 0 18px 48px rgba(4, 10, 24, 0.45);
+    }
+    .upload-box {
+      display: grid;
+      gap: 14px;
+    }
+    .upload-box label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(54,214,255,0.22), rgba(8, 23, 51, 0.86));
+      border: 1px solid rgba(54,214,255,0.16);
+      color: #cdeeff;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .upload-box label:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(54,214,255,0.32), rgba(8, 23, 51, 0.94));
+    }
+    .upload-box input[type="file"] {
+      display: none;
+    }
+    .upload-helper {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .secondary-button {
+      border: 1px solid rgba(54,214,255,0.22);
+      background: rgba(7, 15, 32, 0.86);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+    .secondary-button:hover:not(:disabled) {
+      background: rgba(54,214,255,0.14);
+      transform: translateY(-1px);
+    }
+    .secondary-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .message {
+      border-radius: 18px;
+      padding: 18px 20px;
+      background: rgba(0, 0, 0, 0.26);
+      border: 1px solid rgba(54,214,255,0.12);
+      color: #cce8ff;
+      min-height: 24px;
+      display: grid;
+      align-items: center;
+      font-size: 0.98rem;
+    }
+    .message.error {
+      border-color: rgba(255, 89, 112, 0.22);
+      color: #ffc7d0;
+      background: rgba(67, 18, 27, 0.36);
+    }
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #cdeeff;
+      background: rgba(6, 16, 31, 0.9);
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(54,214,255,0.16);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .back-button:hover {
+      background: rgba(9, 29, 55, 0.96);
+    }
+    @media (max-width: 960px) {
+      .process-grid {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
       }
-      .main-header, .main-footer {
-        padding-left: 2vw;
-        padding-right: 2vw;
+      .dashboard-body {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .page-shell {
+        padding: 22px 16px;
+      }
+      .process-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-panel {
+        padding: 24px;
       }
     }
   </style>
 </head>
 <body>
-  <header class="main-header">
-    <div class="logo-title">
-      <h1>Reproductor de Videos Profesional</h1>
-    </div>
-    <button id="toggleThemeBtn" class="theme-btn" title="Cambiar tema">
-      <span class="theme-icon">🌙</span>
-    </button>
-  </header>
-  <main>
-    <div class="video-container">
-      <div class="controls">
-        <label class="file-label">
-          <input type="file" id="fileInput" accept="video/*">
-          <span class="file-custom">📁 Elegir video</span>
-        </label>
+  <div class="page-shell">
+    <header>
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-title">
+          <h1>Administrador de TVS</h1>
+          <p>Selecciona un proceso para ver y subir videos en la carpeta dedicada a ese proceso.</p>
+        </div>
       </div>
-      <video id="videoPlayer" controls poster="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80" preload="metadata" autoplay muted>
-        Tu navegador no soporta la reproducción de video.
-      </video>
-      <div class="autoplay-msg" id="autoplayMsg" style="display:none;">
-        🔊 El video se reproduce en silencio por políticas del navegador.<br>
-        Haz clic en el video para activar el sonido.
+      <div class="badge">Panel central</div>
+    </header>
+
+    <section class="hero-panel">
+      <div class="hero-top">
+        <div>
+          <h2>Procesos activos</h2>
+          <p class="hint">Cada botón abre un proceso diferente con su propia carpeta de vídeos.</p>
+        </div>
+        <div class="badge">4 procesos disponibles</div>
       </div>
-      <div class="error" id="errorMsg"></div>
-    </div>
-  </main>
+
+      <div class="process-grid" id="processGrid"></div>
+    </section>
+
+    <section class="dashboard" id="dashboardSection">
+      <div class="dashboard-header">
+        <div>
+          <h2 id="dashboardTitle">Proceso</h2>
+          <p class="hint" id="dashboardHint">Selecciona un video para reproducirlo en el panel.</p>
+        </div>
+        <button class="back-button" id="backButton">← Volver al inicio</button>
+      </div>
+
+      <div class="dashboard-body">
+        <div class="panel">
+          <div class="upload-box">
+            <label for="fileInput">📤 Subir vídeo al proceso activo</label>
+            <input type="file" id="fileInput" accept="video/*">
+            <span class="upload-helper">Formatos permitidos: mp4, webm, ogg, mov, m4v.</span>
+          </div>
+          <div class="message" id="statusMessage">Selecciona un proceso para ver sus vídeos.</div>
+          <div class="message error" id="errorMessage" style="display:none;"></div>
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap;">
+            <button class="secondary-button" id="playSelectedButton" type="button" disabled>▶ Reproducir seleccionados</button>
+            <button class="secondary-button" id="stopPlaybackButton" type="button" disabled>■ Detener bucle</button>
+            <span id="selectedCount" style="color:#8fdcff;">0 seleccionados</span>
+          </div>
+          <div class="video-list" id="videoList"></div>
+        </div>
+
+        <div class="panel video-player">
+          <h3 style="margin-top:0; color:#a5e9ff;">Reproductor</h3>
+          <video id="videoPlayer" controls preload="metadata"></video>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <script>
+    const processGrid = document.getElementById('processGrid');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const dashboardTitle = document.getElementById('dashboardTitle');
+    const dashboardHint = document.getElementById('dashboardHint');
+    const backButton = document.getElementById('backButton');
     const fileInput = document.getElementById('fileInput');
-    const playUrlBtn = document.getElementById('playUrlBtn');
+    const playSelectedButton = document.getElementById('playSelectedButton');
+    const stopPlaybackButton = document.getElementById('stopPlaybackButton');
+    const selectedCount = document.getElementById('selectedCount');
+    const videoList = document.getElementById('videoList');
     const videoPlayer = document.getElementById('videoPlayer');
-    const errorMsg = document.getElementById('errorMsg');
-    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
-    const themeIcon = document.querySelector('.theme-icon');
-    const autoplayMsg = document.getElementById('autoplayMsg');
+    const statusMessage = document.getElementById('statusMessage');
+    const errorMessage = document.getElementById('errorMessage');
 
-    // Guardar preferencia de tema
-    let night = localStorage.getItem('nightMode') === 'true';
-    if (night) {
-      document.body.classList.add('night');
-      themeIcon.textContent = '☀️';
+    let activeProcess = null;
+    let playlistQueue = [];
+    let currentPlaylistIndex = 0;
+    let isLooping = false;
+
+    async function fetchProcesses() {
+      try {
+        const response = await fetch('/api/processes');
+        const data = await response.json();
+        renderProcessButtons(data.processes);
+      } catch (error) {
+        statusMessage.textContent = 'No se pudo cargar los procesos. Intenta recargar.';
+      }
     }
-    toggleThemeBtn.addEventListener('click', () => {
-      night = !night;
-      document.body.classList.toggle('night', night);
-      themeIcon.textContent = night ? '☀️' : '🌙';
-      localStorage.setItem('nightMode', night);
-    });
 
-    fileInput.addEventListener('change', () => {
-      const file = fileInput.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        videoPlayer.src = url;
-        videoPlayer.poster = '';
-        errorMsg.textContent = '';
-        videoPlayer.muted = true;
-        videoPlayer.autoplay = true;
-        videoPlayer.play();
-        autoplayMsg.style.display = 'block';
+    function renderProcessButtons(processes) {
+      processGrid.innerHTML = processes.map(process => `
+        <article class="process-card" data-id="${process.id}">
+          <div class="pulse"></div>
+          <div>
+            <h3>${process.label}</h3>
+            <small>Carpeta dedicada a vídeos</small>
+          </div>
+          <div>
+            <span style="font-size:1.05rem; color: #a8e9ff;">Abrir</span>
+          </div>
+        </article>
+      `).join('');
+
+      document.querySelectorAll('.process-card').forEach(card => {
+        card.addEventListener('click', () => {
+          openProcess(card.dataset.id, card.querySelector('h3').textContent);
+        });
+      });
+    }
+
+    async function openProcess(id, label) {
+      activeProcess = id;
+      document.querySelectorAll('.process-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.id === id);
+      });
+      dashboardSection.classList.add('visible');
+      dashboardTitle.textContent = label;
+      dashboardHint.textContent = 'Explora, sube y reproduce los vídeos almacenados en este proceso.';
+      statusMessage.textContent = 'Cargando vídeos...';
+      errorMessage.style.display = 'none';
+      await fetchVideos(id);
+    }
+
+    function closeDashboard() {
+      dashboardSection.classList.remove('visible');
+      activeProcess = null;
+      videoList.innerHTML = '';
+      videoPlayer.src = '';
+      statusMessage.textContent = 'Selecciona un proceso para ver sus vídeos.';
+      errorMessage.style.display = 'none';
+      document.querySelectorAll('.process-card').forEach(card => card.classList.remove('active'));
+    }
+
+    async function fetchVideos(processName) {
+      try {
+        const response = await fetch(`/api/videos/${processName}`);
+        const data = await response.json();
+        renderVideoList(data.videos);
+        if (!data.videos.length) {
+          statusMessage.textContent = 'No hay vídeos en esta carpeta. Sube uno para comenzar.';
+        } else {
+          statusMessage.textContent = `Vídeos cargados: ${data.videos.length}`;
+        }
+      } catch (error) {
+        statusMessage.textContent = 'Error al obtener la lista de vídeos.';
       }
-    });
+    }
 
-    playUrlBtn.addEventListener('click', () => {
-      const url = urlInput.value.trim();
-      if (!url) {
-        errorMsg.textContent = 'Por favor ingresa un enlace de video.';
+    function renderVideoList(videos) {
+      if (!videos.length) {
+        videoList.innerHTML = '<div style="padding:18px; color:#7da7c7;">No se detectaron vídeos para este proceso.</div>';
         return;
       }
-      if (!/^https?:\/\/.+\.(mp4|webm|ogg)(\?.*)?$/i.test(url)) {
-        errorMsg.textContent = 'El enlace debe ser directo a un archivo de video (.mp4, .webm, .ogg).';
+      videoList.innerHTML = videos.map(video => `
+        <div class="video-item" data-url="${video.url}">
+          <input class="video-checkbox" type="checkbox" data-url="${video.url}">
+          <h4>${video.name}</h4>
+          <button type="button" data-url="${video.url}">Reproducir</button>
+        </div>
+      `).join('');
+      videoList.querySelectorAll('.video-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => toggleVideoSelection(checkbox));
+      });
+      videoList.querySelectorAll('.video-item button').forEach(button => {
+        button.addEventListener('click', () => playVideo(button.dataset.url, false));
+      });
+      updateSelectedCount();
+    }
+
+    function toggleVideoSelection(checkbox) {
+      const item = checkbox.closest('.video-item');
+      item.classList.toggle('selected', checkbox.checked);
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      const selectedItems = videoList.querySelectorAll('.video-checkbox:checked');
+      selectedCount.textContent = `${selectedItems.length} seleccionados`;
+      playSelectedButton.disabled = selectedItems.length === 0;
+    }
+
+    function playSelected() {
+      const selectedItems = Array.from(videoList.querySelectorAll('.video-checkbox:checked'));
+      if (!selectedItems.length) {
+        statusMessage.textContent = 'Selecciona al menos un vídeo para reproducir en cadena.';
         return;
       }
+      playlistQueue = selectedItems.map(checkbox => checkbox.dataset.url);
+      currentPlaylistIndex = 0;
+      isLooping = true;
+      stopPlaybackButton.disabled = false;
+      playSelectedButton.disabled = true;
+      statusMessage.textContent = `Reproduciendo ${playlistQueue.length} vídeo(s) en bucle...`;
+      playVideo(playlistQueue[currentPlaylistIndex], true);
+    }
+
+    function stopPlayback() {
+      isLooping = false;
+      playlistQueue = [];
+      currentPlaylistIndex = 0;
+      stopPlaybackButton.disabled = true;
+      playSelectedButton.disabled = false;
+      videoPlayer.pause();
+      statusMessage.textContent = 'Reproducción en bucle detenida.';
+    }
+
+    function playVideo(url, fromPlaylist = false) {
       videoPlayer.src = url;
-      videoPlayer.poster = '';
-      errorMsg.textContent = '';
-      videoPlayer.play();
-    });
+      videoPlayer.dataset.playlist = fromPlaylist ? 'true' : '';
+      videoPlayer.play().catch(() => {
+        statusMessage.textContent = 'Haz clic en el reproductor para iniciar el vídeo.';
+      });
+    }
 
-    videoPlayer.addEventListener('volumechange', () => {
-      if (!videoPlayer.muted && videoPlayer.volume > 0) {
-        autoplayMsg.style.display = 'none';
+    fileInput.addEventListener('change', async () => {
+      if (!activeProcess || !fileInput.files.length) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('process', activeProcess);
+
+      statusMessage.textContent = 'Subiendo vídeo...';
+      errorMessage.style.display = 'none';
+
+      try {
+        const response = await fetch(`/api/upload?process=${encodeURIComponent(activeProcess)}`, {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Error en la carga');
+        statusMessage.textContent = result.message;
+        fileInput.value = '';
+        await fetchVideos(activeProcess);
+      } catch (error) {
+        errorMessage.style.display = 'block';
+        errorMessage.textContent = error.message;
       }
     });
 
-    videoPlayer.addEventListener('click', () => {
-      if (videoPlayer.muted) {
-        videoPlayer.muted = false;
-        autoplayMsg.style.display = 'none';
-      }
-    });
+    backButton.addEventListener('click', closeDashboard);
+    playSelectedButton.addEventListener('click', playSelected);
+    stopPlaybackButton.addEventListener('click', stopPlayback);
 
-    // Atajo: barra espaciadora para pausar/reanudar
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && document.activeElement !== urlInput) {
-        e.preventDefault();
-        if (videoPlayer.paused) videoPlayer.play();
-        else videoPlayer.pause();
+    videoPlayer.addEventListener('ended', () => {
+      if (!isLooping || !playlistQueue.length) {
+        statusMessage.textContent = 'Fin de la reproducción.';
+        return;
       }
-    });
-
-    // Doble click en video: pantalla completa
-    videoPlayer.addEventListener('dblclick', () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
+      if (currentPlaylistIndex < playlistQueue.length - 1) {
+        currentPlaylistIndex += 1;
       } else {
-        videoPlayer.requestFullscreen();
+        currentPlaylistIndex = 0;
       }
+      statusMessage.textContent = `Reproduciendo en bucle: vídeo ${currentPlaylistIndex + 1} de ${playlistQueue.length}`;
+      playVideo(playlistQueue[currentPlaylistIndex], true);
     });
+
+    fetchProcesses();
   </script>
 </body>
 </html>
