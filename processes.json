@@ -1,0 +1,8 @@
+{
+  "processes": [
+    { "id": "proceso1", "label": "Emulsiones" },
+    { "id": "proceso2", "label": "Hidroalcoholes" },
+    { "id": "proceso3", "label": "Maquillajes" },
+    { "id": "proceso4", "label": "Almacén" }
+  ]
+}
